@@ -1,0 +1,16 @@
+EON Calendar
+Copyright (c) 2026 EON contributors
+
+This product is licensed under GPL-3.0-or-later WITH the EON Module ABI
+Exception 1.0 (see LICENSE and LICENSE-EXCEPTION.md).
+
+Third-party components (direct dependencies; full inventory: cargo deny check licenses)
+
+  tauri / tauri-build      MIT OR Apache-2.0
+  tauri-plugin-single-instance, tauri-plugin-notification
+                           MIT OR Apache-2.0
+  eon-office-core          GPL-3.0-or-later WITH the EON Module ABI Exception 1.0
+  serde_json               MIT OR Apache-2.0
+  jiff (with its IANA time-zone data on Windows)
+                           Unlicense OR MIT
+  The system webview (WebView2, WebKitGTK, WKWebView) is the platform's and is not shipped.

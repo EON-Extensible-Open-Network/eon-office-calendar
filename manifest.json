@@ -1,0 +1,33 @@
+{
+  "manifest": 0,
+  "id": "org.eon.office.calendar",
+  "name": "EON Calendar",
+  "version": "0.1.0",
+  "api": {
+    "min": 0,
+    "max": 0
+  },
+  "description": "Events with repetition, exceptions, time zones and reminders, in day, week, month and agenda views, with iCalendar import and export. Other applications open an event with an eon-office:// link.",
+  "entry": {
+    "command": "eon-calendar"
+  },
+  "capabilities": [
+    "storage",
+    "search.index",
+    "search.query",
+    "notifications",
+    "schedule",
+    "events.publish",
+    "call:org.eon.office.contacts"
+  ],
+  "provides": [
+    {
+      "method": "open",
+      "description": "eon-office://org.eon.office.calendar/<id> shows that event; with no id, the window comes forward."
+    }
+  ],
+  "publishes": [
+    "activity"
+  ],
+  "restart": "never"
+}

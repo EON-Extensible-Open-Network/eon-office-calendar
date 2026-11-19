@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "What the interface may ask the host for: the commands registered in src/main.rs and the host's built-in core set (events, window). No plugin is reachable from the interface -- no file system, no shell, no HTTP; notifications are shown by the host.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

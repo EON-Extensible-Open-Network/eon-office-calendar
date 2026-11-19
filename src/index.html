@@ -1,0 +1,139 @@
+<!doctype html>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+SPDX-FileCopyrightText: 2026 EON contributors
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EON Calendar</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="banner" class="banner" role="alert" hidden>
+    <p id="banner-text"></p>
+    <button id="retry" data-i18n="retry">Try again</button>
+  </div>
+
+  <div class="layout" id="layout" hidden>
+    <nav class="sidebar" data-i18n-label="views.label" aria-label="Calendar">
+      <button id="new" type="button" data-i18n="new">New event</button>
+      <div role="tablist" id="modes" data-i18n-label="mode.label" aria-label="Show">
+        <button role="tab" data-mode="day" aria-selected="false" tabindex="-1" data-i18n="mode.day">Day</button>
+        <button role="tab" data-mode="week" aria-selected="true" data-i18n="mode.week">Week</button>
+        <button role="tab" data-mode="month" aria-selected="false" tabindex="-1" data-i18n="mode.month">Month</button>
+        <button role="tab" data-mode="agenda" aria-selected="false" tabindex="-1" data-i18n="mode.agenda">Agenda</button>
+      </div>
+      <h2 data-i18n="calendars.label">Calendars</h2>
+      <ul id="calendars" class="calendars"></ul>
+      <details>
+        <summary data-i18n="export">Export iCalendar</summary>
+        <form id="export-form">
+          <label for="export-path" data-i18n="export.label">Save to</label>
+          <input id="export-path" type="text" spellcheck="false" data-i18n-placeholder="export.placeholder">
+          <button type="submit" data-i18n="export">Export iCalendar</button>
+        </form>
+        <form id="import-form">
+          <label for="import-path" data-i18n="import.label">Import</label>
+          <input id="import-path" type="text" spellcheck="false" data-i18n-placeholder="import.placeholder">
+          <button type="submit" data-i18n="import.go">Import</button>
+        </form>
+      </details>
+    </nav>
+
+    <main id="main" tabindex="-1">
+      <div class="head">
+        <h1 id="range-title"></h1>
+        <div class="steps">
+          <button type="button" id="prev" class="secondary" data-i18n-label="prev" aria-label="Previous">‹</button>
+          <button type="button" id="today" class="secondary" data-i18n="today">Today</button>
+          <button type="button" id="next" class="secondary" data-i18n-label="next" aria-label="Next">›</button>
+        </div>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <div id="view" class="view"></div>
+    </main>
+
+    <aside id="editor" hidden data-i18n-label="editor.label" aria-label="Event">
+      <form id="editor-form">
+        <label for="e-title" data-i18n="title">Title</label>
+        <input id="e-title" type="text" autocomplete="off" required>
+        <div class="check"><input id="e-allday" type="checkbox"> <label for="e-allday" data-i18n="allday">All day</label></div>
+        <div class="pair">
+          <div>
+            <label for="e-start" data-i18n="start">Starts</label>
+            <input id="e-start" type="date" required>
+          </div>
+          <div class="time">
+            <label for="e-start-time" data-i18n="start.time">Start time</label>
+            <input id="e-start-time" type="time">
+          </div>
+        </div>
+        <div class="pair">
+          <div>
+            <label for="e-end" data-i18n="end">Ends</label>
+            <input id="e-end" type="date" required>
+          </div>
+          <div class="time">
+            <label for="e-end-time" data-i18n="end.time">End time</label>
+            <input id="e-end-time" type="time">
+          </div>
+        </div>
+        <label for="e-zone" class="time" data-i18n="zone">Time zone</label>
+        <input id="e-zone" class="time" type="text" list="zones" spellcheck="false" autocomplete="off">
+        <datalist id="zones"></datalist>
+        <label for="e-repeat" data-i18n="repeats">Repeats</label>
+        <select id="e-repeat">
+          <option value="" data-i18n="repeat.none">Does not repeat</option>
+          <option value="FREQ=DAILY" data-i18n="repeat.daily">Every day</option>
+          <option value="FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR" data-i18n="repeat.weekdays">Every weekday</option>
+          <option value="FREQ=WEEKLY" data-i18n="repeat.weekly">Every week</option>
+          <option value="FREQ=WEEKLY;INTERVAL=2" data-i18n="repeat.biweekly">Every two weeks</option>
+          <option value="FREQ=MONTHLY" data-i18n="repeat.monthly">Every month</option>
+          <option value="FREQ=YEARLY" data-i18n="repeat.yearly">Every year</option>
+        </select>
+        <label for="e-reminder" data-i18n="reminder">Reminder</label>
+        <select id="e-reminder">
+          <option value="" data-i18n="reminder.none">No reminder</option>
+          <option value="0" data-i18n="reminder.0">At the start</option>
+          <option value="5" data-i18n="reminder.5">5 minutes before</option>
+          <option value="10" data-i18n="reminder.10">10 minutes before</option>
+          <option value="15" data-i18n="reminder.15">15 minutes before</option>
+          <option value="30" data-i18n="reminder.30">30 minutes before</option>
+          <option value="60" data-i18n="reminder.60">1 hour before</option>
+          <option value="120" data-i18n="reminder.120">2 hours before</option>
+          <option value="1440" data-i18n="reminder.1440">1 day before</option>
+          <option value="10080" data-i18n="reminder.10080">1 week before</option>
+        </select>
+        <label for="e-calendar" data-i18n="calendar">Calendar</label>
+        <input id="e-calendar" type="text" list="calendar-names" autocomplete="off">
+        <datalist id="calendar-names"></datalist>
+        <label for="e-location" data-i18n="location">Location</label>
+        <input id="e-location" type="text" autocomplete="off">
+        <h2 id="people-label" data-i18n="people">People</h2>
+        <ul id="e-people" class="people" aria-labelledby="people-label"></ul>
+        <label for="e-invite" class="sr-only" data-i18n="invite">Invite by name or e-mail</label>
+        <input id="e-invite" type="text" list="people-found" autocomplete="off" data-i18n-placeholder="invite">
+        <datalist id="people-found"></datalist>
+        <label for="e-notes" data-i18n="notes">Notes</label>
+        <textarea id="e-notes" rows="4"></textarea>
+        <div class="actions">
+          <button type="submit" data-i18n="save">Save</button>
+          <button type="button" id="e-delete" class="danger" data-i18n="delete">Delete</button>
+          <button type="button" id="e-close" class="secondary" data-i18n="close">Close</button>
+        </div>
+        <div id="e-ask" class="ask" hidden>
+          <p id="e-question"></p>
+          <button type="button" id="e-one" data-i18n="scope.one">Only this one</button>
+          <button type="button" id="e-all" class="secondary" data-i18n="scope.all">Every occurrence</button>
+          <button type="button" id="e-cancel" class="secondary" data-i18n="cancel">Cancel</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+
+  <div id="announcer" class="sr-only" aria-live="assertive"></div>
+  <script src="app.js"></script>
+</body>
+</html>
